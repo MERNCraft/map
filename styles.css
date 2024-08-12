@@ -1,24 +1,34 @@
+@counter-style relief {
+  symbols: "100m" "200m" "300m" "400m" "500m";
+}
+
 :root {
   font-family: Helvetica, Arial, sans-serif;
   
+  --white: #fff;
   --light: #ddd;
   --dark:  #222;
-  --cell:  30px;
-  --shift: calc(var(--cell) - 1px);
-  --size:  calc(10 * var(--cell));
-  --half:  calc(0.5 * var(--size));
-  --left:  calc(var(--cell) - var(--size));
-  --deep:  calc(var(--cell) * 5);
-  --blue:  #0066;
   --base:  #030;
   --over:  #fff2;
+  --line:  #fff4;
   --hill:  #0606;
+  --blue:  #0066;
+  --grid:  #8886;
+
+  --fade: 0.5;
+
+  --edge:  1px;
+  --tweak: calc(-1 * --edge);
+  --gap:   8px;
+  --cell:  30px;
+  --shift: calc(var(--cell) - var(--edge));
+  --size:  calc(10 * var(--cell));
+  --half:  calc(5 * var(--cell));
 
   counter-set:
     row 0
     col 0
-    height 0
-    depth 0
+    relief 0
   ;
 
   color: var(--light);
@@ -39,21 +49,24 @@ main {
   position: relative;
   width: var(--size);
   height: var(--half);
-  border: 1px solid #fff;
-  border-radius: 8px;
+  border: var(--edge) solid var(--white);
+  border-radius: var(--gap);
   box-sizing: border-box;
   background-color: var(--base);
   overflow: hidden;
 }
 
+/* Animated Grid < > Relief checkbox */
 label {
+  /* Local custom CSS properties */
   --size: 1em;
   --width: calc(2 * var(--size));
+  --color: #fff8;
   position: absolute;
   z-index: 1;
   bottom: 4px;
   right: 2px;
-  color: #fff8;
+  color: var(--color);
 }
 label::before {
   content: "Grid"
@@ -75,14 +88,14 @@ input + span::after {
   width: var(--width);
   height: var(--size);
   border-radius: var(--size);
-  border: 1px solid white;
+  border: var(--edge) solid white;
   box-sizing: border-box;
-  opacity: 0.5;
+  opacity: var(--fade);
 }
 input + span::after {
   position: absolute;
   width: var(--size);
-  background-color: #fff;
+  background-color: var(--white);
   border-color: transparent;
   left: 0;
   transition: left 0.2s
@@ -91,19 +104,30 @@ input:checked + span::after {
   left: var(--size)
 }
 
+/* Switch between Grid and Relief */
+label:has(:checked) ~ .col-1 {
+  pointer-events: none;
+  opacity: var(--fade);
+}
+
+label:has(:checked) ~ .contour,
+label:has(:checked) ~ .contour div {
+  border-color: var(--line);
+}
+
+/* Hill and sea */
 div[class|=hill] {
   position: absolute;
   right: var(--shift);
   top: 0;
-  width: var(--deep);
-}
-div[class|=hill] {
-  position: absolute;
-  top: 0;
   width: var(--size);
-  height: var(--deep);
+  height: var(--half);
   border-radius: 50%;
   background-color: var(--hill);
+  border: var(--edge) solid var(--over);
+}
+div[class|=hill]:hover {
+  counter-increment: relief;
 }
 div.hill-1 {
   right: var(--half);
@@ -113,14 +137,18 @@ div[class|=sea] {
   position: absolute;
   left: var(--cell);
   top: 0;
-  width: var(--deep);
+  width: var(--half);
+  border: var(--edge) solid var(--over);
+}
+div[class|=sea]:hover {
+  counter-increment: relief;
 }
 div[class|=sea] {
   position: absolute;
   left: var(--shift);
   top: 0;
   width: var(--size);
-  height: var(--deep);
+  height: var(--half);
   border-radius: 50%;
   background-color: var(--blue);
 }
@@ -129,13 +157,36 @@ div.sea-1 {
   left: var(--half);
 }
 
+/* Show relief when grid is disactivated */
+p.relief {
+  text-align: center;
+  pointer-events: none;
+  margin: 0.5em 0;
+  opacity: var(--fade);
+}
+p.relief::before {
+  content: "Height: " counter(relief, relief);
+  display: none;
+}
+p.relief::after {
+  content: "Depth: " counter(relief, relief);
+  display: none;
+}
+.hill-1:hover ~ p.relief::before {
+  display: inline;
+}
+.sea-1:hover ~ p.relief::after {
+  display: inline;
+}
+
+/* Columns and rows */
 div[class^=col] {
   position: absolute;
   top: 0;
   left: var(--shift);
   width: var(--cell);
   height: var(--size);
-  border-left: 1px dashed #888;
+  border-left: var(--edge) dashed var(--grid);
   box-sizing: border-box;
 }
 div[class^=col]:hover {
@@ -143,7 +194,7 @@ div[class^=col]:hover {
   background-color: #f001;
 }
 div.col-1{
-  left: -1px;
+  left: var(--tweak); /* - edge, to account for main border */
 }
 
 div[class^=row] {
@@ -151,12 +202,12 @@ div[class^=row] {
   top: var(--shift);
   width: var(--size);
   height: var(--size);
-  border-top: 1px dotted #888;
+  border-top: var(--edge) dotted  var(--grid);
   box-sizing: border-box;
 }
 div.row-1 {
-  left: -1px; /* var(--left); */
-  top: -1px;
+  left: var(--tweak); /* accounts for main border */
+  top: var(--tweak);
 }
 div[class^=row]:hover {
   counter-increment: row;
@@ -171,9 +222,12 @@ div[class^=row]::before {
   display: none;
   background-color: var(--over);
 }
+
+/* Show a label for the hovered cell... */
 div[class^=row]:hover::before {
   display: inline-block;
 }
+/* ...but not for all the cells in the parent rows */
 div[class^=row]:has(:hover)::before {
   display: none;
 }
