@@ -62,10 +62,11 @@ label {
   --size: 1em;
   --width: calc(2 * var(--size));
   --color: #fff8;
+  --nudge: 4px;
   position: absolute;
   z-index: 1;
-  bottom: 4px;
-  right: 2px;
+  bottom: var(--nudge);
+  left: var(--nudge);
   color: var(--color);
 }
 label::before {
@@ -191,7 +192,6 @@ div[class^=col] {
 }
 div[class^=col]:hover {
   counter-increment: col;
-  background-color: #f001;
 }
 div.col-1{
   left: var(--tweak); /* - edge, to account for main border */
@@ -218,9 +218,9 @@ div[class^=row]::before {
   position: absolute;
   width: var(--cell);
   line-height: var(--cell);
-  text-align: center;;
-  display: none;
+  text-align: center;
   background-color: var(--over);
+  display: none;
 }
 
 /* Show a label for the hovered cell... */
@@ -230,4 +230,24 @@ div[class^=row]:hover::before {
 /* ...but not for all the cells in the parent rows */
 div[class^=row]:has(:hover)::before {
   display: none;
+}
+
+/* Show the GitHub logo */
+a.github {
+  width: 0;
+  height: 0;
+
+  img {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 28px;
+    height: 28px;
+    filter: grayscale(1);
+    opacity: 0.25;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
