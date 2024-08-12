@@ -11,11 +11,11 @@
   --deep:  calc(var(--cell) * 5);
   --blue:  #0066;
   --base:  #030;
-  --high:  #060;
+  --over:  #fff2;
   --hill:  #0606;
 
   counter-set:
-    row -1
+    row 0
     col 0
     height 0
     depth 0
@@ -38,12 +38,57 @@ body {
 main {
   position: relative;
   width: var(--size);
-  height: var(--size);
+  height: var(--half);
   border: 1px solid #fff;
   border-radius: 8px;
   box-sizing: border-box;
   background-color: var(--base);
   overflow: hidden;
+}
+
+label {
+  --size: 1em;
+  --width: calc(2 * var(--size));
+  position: absolute;
+  z-index: 1;
+  bottom: 4px;
+  right: 2px;
+  color: #fff8;
+}
+label::before {
+  content: "Grid"
+}
+label::after {
+  content: "Relief"
+}
+input {
+  position: absolute;
+  left: -999vw;
+}
+input + span {
+  position: relative;
+}
+input + span::before,
+input + span::after {
+  content: ".";
+  display: inline-block;
+  width: var(--width);
+  height: var(--size);
+  border-radius: var(--size);
+  border: 1px solid white;
+  box-sizing: border-box;
+  opacity: 0.5;
+}
+input + span::after {
+  position: absolute;
+  width: var(--size);
+  background-color: #fff;
+  border-color: transparent;
+  left: 0;
+  transition: left 0.2s
+}
+input:checked + span::after {
+  left: var(--size)
 }
 
 div[class|=hill] {
@@ -124,7 +169,7 @@ div[class^=row]::before {
   line-height: var(--cell);
   text-align: center;;
   display: none;
-  background-color: var(--high);
+  background-color: var(--over);
 }
 div[class^=row]:hover::before {
   display: inline-block;
