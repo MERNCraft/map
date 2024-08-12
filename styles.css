@@ -1,0 +1,93 @@
+:root {
+  font-family: Helvetica, Arial, sans-serif;
+  
+  --light: #ddd;
+  --dark:  #222;
+  --cell:  30px;
+  --shift: calc(var(--cell) - 1px);
+  --size:  calc(10 * var(--cell));
+  --left:  calc(var(--cell) - var(--size));
+  --base:  #030;
+  --high:  #060;
+
+  counter-set:
+    row -1
+    col 0
+    height 0
+    depth 0
+  ;
+
+  color: var(--light);
+  background-color: var(--dark);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border: 1px solid #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: var(--base);
+  overflow: hidden;
+}
+
+div[class^=col] {
+  position: absolute;
+  top: 0;
+  left: var(--shift);
+  width: var(--cell);
+  height: var(--size);
+  border-left: 1px dashed #888;
+  box-sizing: border-box;
+}
+div[class^=col]:hover {
+  counter-increment: col;
+  background-color: #f001;
+}
+div.col-1{
+  left: -1px;
+  /* overflow: hidden; */
+}
+
+div[class^=row] {
+  position: relative;
+  top: var(--shift);
+  width: var(--size);
+  height: var(--size);
+  border-top: 1px dotted #888;
+  box-sizing: border-box;
+}
+div.row-1 {
+  left: -1px; /* var(--left); */
+  top: -1px;
+}
+div[class^=row]:hover {
+  counter-increment: row;
+}
+
+div[class^=row]::before {
+  content: counter(col, upper-alpha) counter(row);
+  position: absolute;
+  width: var(--cell);
+  line-height: var(--cell);
+  text-align: center;;
+  display: none;
+  background-color: var(--high);
+}
+div[class^=row]:hover::before {
+  display: inline-block;
+}
+div[class^=row]:has(:hover)::before {
+  display: none;
+}
