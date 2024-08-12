@@ -6,9 +6,13 @@
   --cell:  30px;
   --shift: calc(var(--cell) - 1px);
   --size:  calc(10 * var(--cell));
+  --half:  calc(0.5 * var(--size));
   --left:  calc(var(--cell) - var(--size));
+  --deep:  calc(var(--cell) * 5);
+  --blue:  #0066;
   --base:  #030;
   --high:  #060;
+  --hill:  #0606;
 
   counter-set:
     row -1
@@ -42,6 +46,44 @@ main {
   overflow: hidden;
 }
 
+div[class|=hill] {
+  position: absolute;
+  right: var(--shift);
+  top: 0;
+  width: var(--deep);
+}
+div[class|=hill] {
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: var(--deep);
+  border-radius: 50%;
+  background-color: var(--hill);
+}
+div.hill-1 {
+  right: var(--half);
+}
+
+div[class|=sea] {
+  position: absolute;
+  left: var(--cell);
+  top: 0;
+  width: var(--deep);
+}
+div[class|=sea] {
+  position: absolute;
+  left: var(--shift);
+  top: 0;
+  width: var(--size);
+  height: var(--deep);
+  border-radius: 50%;
+  background-color: var(--blue);
+}
+div.sea-1 {
+  background-color: #00c;
+  left: var(--half);
+}
+
 div[class^=col] {
   position: absolute;
   top: 0;
@@ -57,7 +99,6 @@ div[class^=col]:hover {
 }
 div.col-1{
   left: -1px;
-  /* overflow: hidden; */
 }
 
 div[class^=row] {
